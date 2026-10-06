@@ -18,14 +18,12 @@ pipeline {
             }
         }
         stage('deploy') {
-            environment {
-                AWS_ACCESS_KEY_ID = credentials('jenkins_aws_access_key_id')
-                AWS_SECRET_ACCESS_KEY = credentials('jenkins-aws_secret_access_key')
-            }
             steps {
                 script {
                    echo 'deploying docker image...'
-                   sh 'kubectl create deployment nginx-deployment --image=nginx'
+                   withKubeConfig([credentialsId: 'Linode-LKE-Test-Cluster-Credential', serverUrl: 'https://222f04d1-d235-4bfb-a16c-85216f153969.eu-central-2-gw.linodelke.net']) {
+                        sh 'kubectl create deployment nginx-deployment --image=nginx'
+                   }
                 }
             }
         }
